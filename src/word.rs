@@ -7,7 +7,7 @@ pub fn get_word() -> String {
 
     match choose_word(words, saved_words_quantity) {
         Ok(choosed_word) => {
-            print!("{}\n", choosed_word);
+            print!("{}\n", choosed_word); // TODO remover essa linha
             return choosed_word;
         }
         Err(err) => {

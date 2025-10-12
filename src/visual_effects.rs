@@ -1,3 +1,10 @@
+use crossterm::{
+    execute,
+    terminal::{Clear, ClearType},
+};
+
+use std::io::{stdout};
+
 pub fn print_strength(value: i8) {
     match value {
         0 => print_0(),
@@ -9,6 +16,10 @@ pub fn print_strength(value: i8) {
         6 => print_6(),
         _ => print!("erro!"),
     }
+}
+
+pub fn clear_screen() {
+    execute!(stdout(), Clear(ClearType::All)).unwrap();
 }
 
 fn print_0() {
