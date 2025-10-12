@@ -1,50 +1,47 @@
-use std::fs;
-use rand::prelude::*;
+mod word;
+use std::io::{self, Write};
 
 fn main() {
-    let (words, saved_words_quantity) = read_file();
-    // let word  = choose_word(words, saved_words_quantity);
+    let word = word::get_word();
+    let mut input = String::new();
 
-    match choose_word(words, saved_words_quantity) {
-        Ok(word) => print!("{}", word),
-        Err(err) => eprintln!("Erro ao ler arquivo: {}", err),
+    loop {
+        guess_letter(&mut input);
     }
 }
 
-fn read_file() -> (String, usize) {
-    let content = fs::read_to_string("./assets/words_pt.txt")
-        .expect("Não foi possível ler o arquivo!");
+fn get_guess(input: &mut String) -> char {
+    loop {
+        input.clear();
+        print!("Digite uma letra: ");
+        io::stdout().flush().unwrap();
 
-    let lines_count = content.lines().count();
-    return (content, lines_count);
+        io::stdin()
+            .read_line(input)
+            .expect("Erro ao ler entrada");
+
+        let input = input.trim();
+
+        if let Some(letter) = input.chars().next() {
+            return letter;
+        }
+
+        println!("Nenhum caractere digitado! Tente novamente.");
+    }
 }
 
-fn choose_word(words: String, saved_words_quantity: usize) -> Result<String, String> {
-    let randon_number = rand::rng().random_range(0..saved_words_quantity);
-    
-    print!("{}\n", randon_number);
+fn guess_letter(input: &mut String) {
+    let mut all_guess: [char; 26] = ['_'; 26];
+    let guess = get_guess(input);
 
-    let mut counter = 0;
-    let mut word = String::from("");
-    for c in words.chars() {
-        let is_break_line = is_break_line(c);
-
-        if is_break_line && counter == randon_number {
-            return Ok(word);
+    for i in 0..all_guess.len() {
+        if all_guess[i] == '_' {
+            all_guess[i] = guess;
+            break;
         }
 
-        if is_break_line {
-            counter = counter + 1;
-        }
-
-        if counter == randon_number {
-            word.push(c);
+        if guess == all_guess[i] {
+            println!("Você já tentou essa lentra!\n");
         }
     }
-
-    Err("Palavra escolhida não encontrada!".to_string())
-}
-
-fn is_break_line(c: char) -> bool {
-    return c == 0xA as char;
 }
