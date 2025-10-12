@@ -1,4 +1,5 @@
 use rand::prelude::*;
+use std::collections::HashMap;
 use std::fs;
 use std::process;
 
@@ -6,14 +7,38 @@ pub fn get_word() -> String {
     let (words, saved_words_quantity) = read_file();
 
     match choose_word(words, saved_words_quantity) {
-        Ok(choosed_word) => {
-            print!("{}\n", choosed_word); // TODO remover essa linha
-            return choosed_word;
+        Ok(chosen_word) => {
+            print!("{}\n", chosen_word); // TODO remover essa linha
+            return chosen_word;
         }
         Err(err) => {
             eprintln!("Erro ao ler arquivo: {}", err);
             process::exit(1);
         }
+    }
+}
+
+pub fn initialize_normalization_hashmap() -> HashMap<char, char> {
+    return HashMap::from([
+        ('á', 'a'),
+        ('â', 'a'),
+        ('à', 'a'),
+        ('ã', 'a'),
+        ('é', 'e'),
+        ('ê', 'e'),
+        ('í', 'i'),
+        ('ó', 'o'),
+        ('ô', 'o'),
+        ('õ', 'o'),
+        ('ú', 'u'),
+        ('ç', 'c'),
+    ]);
+}
+
+pub fn normalize_char(c: char, normalization_hashmap: &HashMap<char, char>) -> char {
+    match normalization_hashmap.get(&c) {
+        Some(&normalized) => normalized,
+        None => c,  
     }
 }
 
@@ -26,13 +51,13 @@ fn read_file() -> (String, usize) {
 }
 
 fn choose_word(words: String, saved_words_quantity: usize) -> Result<String, String> {
-    let randon_number = rand::rng().random_range(0..saved_words_quantity);
+    let random_number = rand::rng().random_range(0..saved_words_quantity);
 
     let mut word_counter = 0;
     let mut word = String::from("");
     for c in words.chars() {
         let is_break_line = is_break_line(c);
-        let is_choose_word = word_counter == randon_number;
+        let is_choose_word = word_counter == random_number;
 
         if is_break_line && is_choose_word {
             return Ok(word);
