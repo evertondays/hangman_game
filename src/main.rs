@@ -53,13 +53,13 @@ fn get_guess(input: &mut String) -> char {
 }
 
 fn guess_letter(input: &mut String, all_guess: &mut [char; 26]) -> char {
-    // TODO temos um bug aqui
     loop {
         let guess = get_guess(input);
 
         for i in 0..all_guess.len() {
             if guess == all_guess[i] {
                 println!("\nVocê já tentou essa letra!\n");
+                break;
             }
 
             if all_guess[i] == '_' as char {
