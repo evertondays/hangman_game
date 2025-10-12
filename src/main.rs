@@ -1,13 +1,37 @@
+mod visual_effects;
 mod word;
-use std::io::{self, Write};
+use crossterm::{
+    execute,
+    terminal::{Clear, ClearType},
+};
+use std::io::{self, Write, stdout};
 
 fn main() {
     let word = word::get_word();
+
+    let mut all_guess: [char; 26] = ['_'; 26];
     let mut input = String::new();
+    let mut errors: i8 = 0;
 
     loop {
-        guess_letter(&mut input);
+        clear_screen();
+        visual_effects::print_strength(errors);
+
+        let guess = guess_letter(&mut input, &mut all_guess);
+        if !check_is_correct(&word, guess) {
+            errors = errors + 1;
+        }
     }
+}
+
+fn check_is_correct(word: &String, guess: char) -> bool {
+    for c in word.chars() {
+        if c == guess {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 fn get_guess(input: &mut String) -> char {
@@ -16,9 +40,7 @@ fn get_guess(input: &mut String) -> char {
         print!("Digite uma letra: ");
         io::stdout().flush().unwrap();
 
-        io::stdin()
-            .read_line(input)
-            .expect("Erro ao ler entrada");
+        io::stdin().read_line(input).expect("Erro ao ler entrada");
 
         let input = input.trim();
 
@@ -30,18 +52,24 @@ fn get_guess(input: &mut String) -> char {
     }
 }
 
-fn guess_letter(input: &mut String) {
-    let mut all_guess: [char; 26] = ['_'; 26];
-    let guess = get_guess(input);
+fn guess_letter(input: &mut String, all_guess: &mut [char; 26]) -> char {
+    // TODO temos um bug aqui
+    loop {
+        let guess = get_guess(input);
 
-    for i in 0..all_guess.len() {
-        if all_guess[i] == '_' {
-            all_guess[i] = guess;
-            break;
-        }
+        for i in 0..all_guess.len() {
+            if guess == all_guess[i] {
+                println!("\nVocê já tentou essa letra!\n");
+            }
 
-        if guess == all_guess[i] {
-            println!("Você já tentou essa lentra!\n");
+            if all_guess[i] == '_' as char {
+                all_guess[i] = guess;
+                return guess;
+            }
         }
     }
+}
+
+fn clear_screen() {
+    execute!(stdout(), Clear(ClearType::All)).unwrap();
 }
