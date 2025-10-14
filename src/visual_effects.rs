@@ -5,6 +5,51 @@ use crossterm::{
 
 use std::io::{stdout};
 
+#[derive(Debug)]
+struct Letter {
+    c: char,
+    visible: bool,
+}
+
+pub struct VisualWord {
+    size: usize,
+    letters: [Letter; 35],
+}
+
+pub fn get_visual_word(word: &String) -> VisualWord {
+    let word_chars: Vec<char> = word.chars().collect();
+
+    let letters = std::array::from_fn(|i| {
+        if let Some(c) = word_chars.get(i) {
+            Letter {
+                c: *c,
+                visible: false,
+            }
+        } else {
+            Letter {
+                c: '\0',
+                visible: false,
+            }
+        }
+    });
+
+    let size = word.len().min(35);
+
+    return VisualWord { size, letters };
+}
+
+pub fn print_word(word: &VisualWord) {
+    for i in 0..word.size {
+        if word.letters[i].visible {
+            print!("{}", word.letters[i].c);
+        } else {
+            print!("_");
+        }
+    }
+
+    print!("\n");
+}
+
 pub fn print_strength(value: i8) {
     match value {
         0 => print_0(),

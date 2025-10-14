@@ -7,17 +7,18 @@ mod player_input;
 const LETTERS_IN_ALPHABET: usize = 26;
 
 fn main() {
-    let normalization_map = word::initialize_normalization_hashmap();
-
-    let word = word::get_word();
-
-    let mut all_guess: [char; LETTERS_IN_ALPHABET] = ['_'; LETTERS_IN_ALPHABET];
     let mut input = String::new();
+    let normalization_map = word::initialize_normalization_hashmap();
+    
     let mut errors: i8 = 0;
+    let word = word::get_word();
+    let visual_word = visual_effects::get_visual_word(&word);
+    let mut all_guess: [char; LETTERS_IN_ALPHABET] = ['_'; LETTERS_IN_ALPHABET];
 
     loop {
         visual_effects::clear_screen();
         visual_effects::print_strength(errors);
+        visual_effects::print_word(&visual_word);
 
         let guess = player_input::guess_letter(&mut input, &mut all_guess, &normalization_map);
         if !check_is_correct(&word, guess, &normalization_map) {
