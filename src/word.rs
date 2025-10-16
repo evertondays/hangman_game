@@ -8,7 +8,6 @@ pub fn get_word() -> String {
 
     match choose_word(words, saved_words_quantity) {
         Ok(chosen_word) => {
-            print!("{}\n", chosen_word); // TODO remover essa linha
             return chosen_word;
         }
         Err(err) => {
@@ -77,4 +76,43 @@ fn choose_word(words: String, saved_words_quantity: usize) -> Result<String, Str
 
 fn is_break_line(c: char) -> bool {
     return c == 0xA as char;
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_break_line() {
+        assert_eq!(is_break_line('a'), false);
+        assert_eq!(is_break_line('v'), false);
+        assert_eq!(is_break_line('ç'), false);
+        assert_eq!(is_break_line('ã'), false);
+        assert_eq!(is_break_line('\n'), true);
+        assert_eq!(is_break_line(0xA as char), true);
+    }
+
+    #[test]
+    fn test_normalize_char() {
+        let hashmap = initialize_normalization_hashmap();
+
+        assert_eq!(normalize_char('â', &hashmap), 'a');
+        assert_eq!(normalize_char('à', &hashmap), 'a');
+        assert_eq!(normalize_char('ã', &hashmap), 'a');
+        assert_eq!(normalize_char('é', &hashmap), 'e');
+        assert_eq!(normalize_char('á', &hashmap), 'a');
+        assert_eq!(normalize_char('ê', &hashmap), 'e');
+        assert_eq!(normalize_char('í', &hashmap), 'i');
+        assert_eq!(normalize_char('ó', &hashmap), 'o');
+        assert_eq!(normalize_char('ô', &hashmap), 'o');
+        assert_eq!(normalize_char('õ', &hashmap), 'o');
+        assert_eq!(normalize_char('ú', &hashmap), 'u');
+        assert_eq!(normalize_char('ç', &hashmap), 'c');
+
+        assert_eq!(normalize_char('c', &hashmap), 'c');
+        assert_eq!(normalize_char('a', &hashmap), 'a');
+        assert_eq!(normalize_char('b', &hashmap), 'b');
+        assert_eq!(normalize_char('c', &hashmap), 'c');
+        assert_eq!(normalize_char('z', &hashmap), 'z');
+        assert_eq!(normalize_char('h', &hashmap), 'h');
+    }
 }
