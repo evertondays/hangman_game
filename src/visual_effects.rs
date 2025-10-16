@@ -33,7 +33,7 @@ pub fn get_visual_word(word: &String) -> VisualWord {
         }
     });
 
-    let size = word.len().min(35);
+    let size = word.chars().count().min(35);
 
     return VisualWord { size, letters };
 }
@@ -135,4 +135,59 @@ fn print_6() {
     print!("/ \\ |\n");
     print!("    |\n");
     print!("=====\n");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_visual_word_with_simple_example() {
+        // Arrange
+        let word = String::from("rust");
+
+        // Act
+        let result = get_visual_word(&word);
+
+        // Assert
+        assert_eq!(result.size, 4);
+        assert_eq!(result.letters[0].c, 'r');
+        assert_eq!(result.letters[0].visible, false);
+        assert_eq!(result.letters[3].c, 't');
+        assert_eq!(result.letters[4].c, '\0'); 
+    }
+
+    #[test]
+    fn test_get_visual_word_with_long_example() {
+        // Arrange
+        let word = String::from("paralelepípedo");
+
+        // Act
+        let result = get_visual_word(&word);
+
+        // Assert
+        assert_eq!(result.size, 14);
+        assert_eq!(result.letters[9].c, 'í');
+        assert_eq!(result.letters[0].visible, false);
+        assert_eq!(result.letters[2].c, 'r');
+        assert_eq!(result.letters[15].c, '\0'); 
+    }
+
+    #[test]
+    fn test_get_visual_word_with_fake_example() {
+        // Arrange
+        let word = String::from("ãuç");
+
+        // Act
+        let result = get_visual_word(&word);
+
+        // Assert
+        assert_eq!(result.size, 3);
+        assert_eq!(result.letters[0].c, 'ã');
+        assert_eq!(result.letters[0].visible, false);
+        assert_eq!(result.letters[1].c, 'u');
+        assert_eq!(result.letters[1].visible, false);
+        assert_eq!(result.letters[2].c, 'ç');
+        assert_eq!(result.letters[2].visible, false);
+    }
 }
