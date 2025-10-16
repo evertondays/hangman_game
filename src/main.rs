@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::visual_effects::VisualWord;
+
 mod visual_effects;
 mod word;
 mod player_input;
@@ -12,7 +14,7 @@ fn main() {
     
     let mut errors: i8 = 0;
     let word = word::get_word();
-    let visual_word = visual_effects::get_visual_word(&word);
+    let mut visual_word = visual_effects::get_visual_word(&word);
     let mut all_guess: [char; LETTERS_IN_ALPHABET] = ['_'; LETTERS_IN_ALPHABET];
 
     loop {
@@ -21,18 +23,21 @@ fn main() {
         visual_effects::print_word(&visual_word);
 
         let guess = player_input::guess_letter(&mut input, &mut all_guess, &normalization_map);
-        if !check_is_correct(&word, guess, &normalization_map) {
+        if !check_is_correct(&mut visual_word, guess, &normalization_map) {
             errors = errors + 1;
         }
     }
 }
 
-fn check_is_correct(word: &String, guess: char, normalization_map: &HashMap<char, char>) -> bool {
-    for c in word.chars() {
-        if word::normalize_char(c, &normalization_map) == guess {
-            return true;
+fn check_is_correct(word: &mut VisualWord, guess: char, normalization_map: &HashMap<char, char>) -> bool {
+    let mut is_correct = false;
+
+    for i in 0..word.size {
+        if word::normalize_char(word.letters[i].c, &normalization_map) == guess {
+            word.letters[i].visible = true;
+            is_correct = true;
         }
     }
 
-    return false;
+    return is_correct;
 }

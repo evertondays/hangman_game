@@ -6,14 +6,14 @@ use crossterm::{
 use std::io::{stdout};
 
 #[derive(Debug)]
-struct Letter {
-    c: char,
-    visible: bool,
+pub struct Letter {
+    pub c: char,
+    pub visible: bool,
 }
 
 pub struct VisualWord {
-    size: usize,
-    letters: [Letter; 35],
+    pub size: usize,
+    pub letters: [Letter; 35],
 }
 
 pub fn get_visual_word(word: &String) -> VisualWord {
