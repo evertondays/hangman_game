@@ -3,7 +3,7 @@ use crossterm::{
     terminal::{Clear, ClearType},
 };
 
-use std::io::{stdout};
+use std::io::stdout;
 
 #[derive(Debug)]
 pub struct Letter {
@@ -39,6 +39,8 @@ pub fn get_visual_word(word: &String) -> VisualWord {
 }
 
 pub fn print_word(word: &VisualWord) {
+    print!("\n ");
+
     for i in 0..word.size {
         if word.letters[i].visible {
             print!("{}", word.letters[i].c);
@@ -47,7 +49,7 @@ pub fn print_word(word: &VisualWord) {
         }
     }
 
-    print!("\n");
+    print!("\n\n");
 }
 
 pub fn print_strength(value: i8) {
@@ -63,78 +65,100 @@ pub fn print_strength(value: i8) {
     }
 }
 
+pub fn print_used_words(all_guess: &[char; 26]) {
+    if all_guess[0] == '_' {
+        return;
+    }
+
+    print!(" Letras usadas: (");
+
+    for i in 0..26 {
+        if all_guess[i] == '_' {
+            break;
+        }
+
+        if i > 0 {
+            print!(" - {}", all_guess[i]);
+        } else {
+            print!("{}", all_guess[i]);
+        }
+    }
+
+    print!(")\n\n");
+}
+
 pub fn clear_screen() {
     execute!(stdout(), Clear(ClearType::All)).unwrap();
 }
 
 fn print_0() {
-    print!("+--+\n");
-    print!("|  |\n");
-    print!("   |\n");
-    print!("   |\n");
-    print!("   |\n");
-    print!("   |\n");
-    print!("=====\n");
+    print!(" +--+\n");
+    print!(" |  |\n");
+    print!("    |\n");
+    print!("    |\n");
+    print!("    |\n");
+    print!("    |\n");
+    print!(" =====\n");
 }
 
 fn print_1() {
-    print!("+--+\n");
-    print!("|  |\n");
-    print!("O  |\n");
-    print!("   |\n");
-    print!("   |\n");
-    print!("   |\n");
-    print!("=====\n");
+    print!(" +--+\n");
+    print!(" |  |\n");
+    print!(" O  |\n");
+    print!("    |\n");
+    print!("    |\n");
+    print!("    |\n");
+    print!(" =====\n");
 }
 
 fn print_2() {
-    print!(" +--+\n");
-    print!(" |  |\n");
-    print!(" O  |\n");
-    print!(" |  |\n");
-    print!("    |\n");
-    print!("    |\n");
-    print!("=====\n");
+    print!("  +--+\n");
+    print!("  |  |\n");
+    print!("  O  |\n");
+    print!("  |  |\n");
+    print!("     |\n");
+    print!("     |\n");
+    print!(" =====\n");
 }
 
 fn print_3() {
-    print!(" +--+\n");
-    print!(" |  |\n");
-    print!(" O  |\n");
-    print!("/|  |\n");
-    print!("    |\n");
-    print!("    |\n");
-    print!("=====\n");
+    print!("  +--+\n");
+    print!("  |  |\n");
+    print!("  O  |\n");
+    print!(" /|  |\n");
+    print!("     |\n");
+    print!("     |\n");
+    print!(" =====\n");
 }
 
 fn print_4() {
-    print!(" +--+\n");
-    print!(" |  |\n");
-    print!(" O  |\n");
-    print!("/|\\ |\n");
-    print!("    |\n");
-    print!("    |\n");
-    print!("=====\n");
+    print!("  +--+\n");
+    print!("  |  |\n");
+    print!("  O  |\n");
+    print!(" /|\\ |\n");
+    print!("     |\n");
+    print!("     |\n");
+    print!(" =====\n");
 }
 
 fn print_5() {
-    print!(" +--+\n");
-    print!(" |  |\n");
-    print!(" O  |\n");
-    print!("/|\\ |\n");
-    print!("/   |\n");
-    print!("    |\n");
-    print!("=====\n");
+    print!("  +--+\n");
+    print!("  |  |\n");
+    print!("  O  |\n");
+    print!(" /|\\ |\n");
+    print!(" /   |\n");
+    print!("     |\n");
+    print!(" =====\n");
 }
 
 fn print_6() {
-    print!(" +--+\n");
-    print!(" |  |\n");
-    print!(" O  |\n");
-    print!("/|\\ |\n");
-    print!("/ \\ |\n");
-    print!("    |\n");
-    print!("=====\n");
+    print!("  +--+\n");
+    print!("  |  |\n");
+    print!("  O  |\n");
+    print!(" /|\\ |\n");
+    print!(" / \\ |\n");
+    print!("     |\n");
+    print!(" =====\n");
 }
 
 #[cfg(test)]
@@ -154,7 +178,7 @@ mod tests {
         assert_eq!(result.letters[0].c, 'r');
         assert_eq!(result.letters[0].visible, false);
         assert_eq!(result.letters[3].c, 't');
-        assert_eq!(result.letters[4].c, '\0'); 
+        assert_eq!(result.letters[4].c, '\0');
     }
 
     #[test]
@@ -170,7 +194,7 @@ mod tests {
         assert_eq!(result.letters[9].c, 'í');
         assert_eq!(result.letters[0].visible, false);
         assert_eq!(result.letters[2].c, 'r');
-        assert_eq!(result.letters[15].c, '\0'); 
+        assert_eq!(result.letters[15].c, '\0');
     }
 
     #[test]

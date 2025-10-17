@@ -1,8 +1,15 @@
-use std::{collections::HashMap, io::{self, Write}};
+use std::{
+    collections::HashMap,
+    io::{self, Write},
+};
 
 use crate::word::normalize_char;
 
-pub fn guess_letter(input: &mut String, all_guess: &mut [char; 26], normalization_map: &HashMap<char, char>) -> char {
+pub fn guess_letter(
+    input: &mut String,
+    all_guess: &mut [char; 26],
+    normalization_map: &HashMap<char, char>,
+) -> char {
     loop {
         let guess = get_player_input(input, &normalization_map);
 
@@ -37,7 +44,7 @@ fn get_player_input(input: &mut String, normalization_map: &HashMap<char, char>)
 
         if let Some(mut letter) = input.chars().last() {
             letter = normalize_char(letter, &normalization_map);
-    
+
             if ('a'..='z').contains(&letter) {
                 return letter;
             }

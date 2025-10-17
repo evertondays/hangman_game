@@ -37,7 +37,7 @@ pub fn initialize_normalization_hashmap() -> HashMap<char, char> {
 pub fn normalize_char(c: char, normalization_hashmap: &HashMap<char, char>) -> char {
     match normalization_hashmap.get(&c) {
         Some(&normalized) => normalized,
-        None => c,  
+        None => c,
     }
 }
 
